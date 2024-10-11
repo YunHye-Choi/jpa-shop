@@ -3,6 +3,7 @@ package jpabook.jpashop.domain;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "ORDERS")
@@ -11,17 +12,23 @@ public class Order extends BaseEntity {
     @Column(name="ORDER_ID")
     private Long id;
 
-    @Column(name="MEMBER_ID")
-    private Long MemberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "DELIVERY_ID")
+    private Delivery delivery;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    private List<OrderItem> orderItems;
 
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
-    @OneToOne
-    @JoinColumn(name = "DELIVERY_ID")
-    private Delivery delivery;
+
 
     public Order() {
     }
@@ -34,12 +41,28 @@ public class Order extends BaseEntity {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return MemberId;
+    public Member getMember() {
+        return member;
     }
 
-    public void setMemberId(Long memberId) {
-        MemberId = memberId;
+    public void setMember(Member member) {
+        this.member = member;
+    }
+
+    public Delivery getDelivery() {
+        return delivery;
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public LocalDateTime getOrderDate() {
